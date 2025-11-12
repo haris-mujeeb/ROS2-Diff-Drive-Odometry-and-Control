@@ -22,9 +22,17 @@ This section will detail the steps involved in setting up and understanding the 
 ### 4. How to Use/Launch
 *   Compile the workspace: `colcon build --packages-select bumperbot_controller`
 *   Source the workspace: `. install/setup.bash` (or your preferred shell setup script)
-*   Launch the robot (example, actual command may vary):
+*   Launch the controller:
     ```bash
-    ros2 launch bumperbot_bringup bumperbot_launch.py
+    ros2 launch bumperbot_controller controller.launch.py
+    ```
+    To launch the Python version of the simple controller:
+    ```bash
+    ros2 launch bumperbot_controller controller.launch.py use_python:=true
+    ```
+    To launch the C++ version of the simple controller (default):
+    ```bash
+    ros2 launch bumperbot_controller controller.launch.py use_python:=false
     ```
 
 ### 5. Testing the Robot Setup
@@ -84,6 +92,15 @@ These commands are useful for inspecting and managing `ros2_control` components.
     ros2 topic info /controller_name/topic_name
     ```
     (Replace `/controller_name/topic_name` with actual topic for state or commands)
+
+## Parameters
+
+The `simple_controller` nodes (both Python and C++) accept the following parameters:
+
+*   `wheel_radius`: The radius of the robot's wheels in meters.
+*   `wheel_separation`: The distance between the centers of the two wheels in meters.
+
+These parameters can be set in the launch file or overridden via the command line.
 
 ## Note on Forward Differential Kinematics for a Differential Drive Robot
 
