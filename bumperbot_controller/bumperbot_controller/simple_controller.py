@@ -40,10 +40,10 @@ class SimpleController(Node):
     self.speed_conversion_ = np.array([[self.wheel_radius_/2, self.wheel_radius_/2],
                                         [self.wheel_radius_/self.wheel_separation_, -self.wheel_radius_/self.wheel_separation_]])
     self.joint_sub_ = self.create_subscription(JointState, "joint_states", self.joint_callback, 10)
-    self.odom_pub_ = self.create_publisher(Odometry, "odom", 10)
+    self.odom_pub_ = self.create_publisher(Odometry, "bumperbot_controller/odom", 10)
 
     self.odom_msg_ = Odometry()
-    self.odom_msg_.header.frame_id = "odom"
+    self.odom_msg_.header.frame_id = "bumperbot_controller/odom"
     self.odom_msg_.child_frame_id = "base_footprint"
     self.odom_msg_.pose.pose.orientation.w = 0.0
     self.odom_msg_.pose.pose.orientation.x = 0.0
@@ -57,7 +57,7 @@ class SimpleController(Node):
 
     self.br_ = TransformBroadcaster(self)
     self.transform_stamped_ = TransformStamped()
-    self.transform_stamped_.header.frame_id = "odom"
+    self.transform_stamped_.header.frame_id = "bumperbot_controller/odom"
     self.transform_stamped_.child_frame_id = "base_footprint"
 
 

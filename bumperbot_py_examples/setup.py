@@ -24,7 +24,8 @@ setup(
     },
     entry_points={
         'console_scripts': [
-          'simple_tf_kinematics = bumperbot_py_examples.simple_tf_kinematics:main'
+          'simple_tf_kinematics = bumperbot_py_examples.simple_tf_kinematics:main',
+          'simple_lifecycle_node = bumperbot_py_examples.simple_lifecycle_node:main'
         ],
     },
 )
