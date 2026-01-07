@@ -8,8 +8,8 @@ import os
 from pathlib import Path
 from ament_index_python.packages import get_package_share_directory
 
-def generate_launch_description():
-  
+
+def generate_launch_description():  
   bumperbot_description_dir = get_package_share_directory("bumperbot_description")
   ros_distro = os.environ['ROS_DISTRO']
   is_ignition = "True" if ros_distro == "humble" else "False"

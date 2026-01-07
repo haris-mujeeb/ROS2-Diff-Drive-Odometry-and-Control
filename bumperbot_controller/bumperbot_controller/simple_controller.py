@@ -35,7 +35,7 @@ class SimpleController(Node):
     self.theta_ = 0.0
 
     self.wheel_cmd_pub = self.create_publisher(Float64MultiArray, "simple_velocity_controller/commands", 10)
-    self.vel_sub = self.create_subscription(TwistStamped, "/cmd_vel", self.vel_callback, 10)
+    self.vel_sub = self.create_subscription(TwistStamped, "/bumperbot_controller/cmd_vel", self.vel_callback, 10)
 
     self.speed_conversion_ = np.array([[self.wheel_radius_/2, self.wheel_radius_/2],
                                         [self.wheel_radius_/self.wheel_separation_, -self.wheel_radius_/self.wheel_separation_]])
