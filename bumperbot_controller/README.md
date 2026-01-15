@@ -12,28 +12,31 @@ This section will detail the steps involved in setting up and understanding the 
 
 ### 2. Setup (Notes)
 *   Ensure `ros2_control` and its dependencies are installed.
-*   This package typically works in conjunction with `bumperbot_description` (for URDF/XACRO definition) and `bumperbot_bringup` (for launching the robot).
+*   This package typically works in conjunction with `bumperbot_description` (for URDF/XACRO definition) and a bringup package for launching the robot.
 
 ### 3. Key Files and Directories
 *   `config/`: Contains YAML configuration files for the controllers.
-*   `src/`: C++ or Python source files for custom controllers or nodes.
+*   `src/`: C++ source files for custom controllers (`simple_controller.cpp`, `noisy_controller.cpp`).
+*   `bumperbot_controller/`: Python source files for custom controllers (`simple_controller.py`, `noisy_controller.py`).
+*   `launch/`: Python launch files for starting controllers.
 *   `CMakeLists.txt`/`package.xml`: Standard ROS 2 package files.
 
 ### 4. How to Use/Launch
 *   Compile the workspace: `colcon build --packages-select bumperbot_controller`
-*   Source the workspace: `. install/setup.bash` (or your preferred shell setup script)
-*   Launch the controller:
+*   Source the workspace: `. install/setup.bash`
+*   Launch the main controller launch file:
     ```bash
     ros2 launch bumperbot_controller controller.launch.py
     ```
-    To launch the Python version of the simple controller:
-    ```bash
-    ros2 launch bumperbot_controller controller.launch.py use_python:=true
-    ```
-    To launch the C++ version of the simple controller (default):
-    ```bash
-    ros2 launch bumperbot_controller controller.launch.py use_python:=false
-    ```
+    You can specify which implementation to use (C++ or Python) for the simple controller:
+    *   To launch the Python version:
+        ```bash
+        ros2 launch bumperbot_controller controller.launch.py use_python:=true
+        ```
+    *   To launch the C++ version (default):
+        ```bash
+        ros2 launch bumperbot_controller controller.launch.py use_python:=false
+        ```
 
 ### 5. Testing the Robot Setup
 
@@ -44,9 +47,9 @@ ros2 topic pub /simple_velocity_controller/commands std_msgs/msg/Float64MultiArr
 ```
 This command sends a velocity of 5.0 units to the first joint and 0.0 to the second joint. Observe the robot's behavior in simulation or on hardware.
 
-### 6. Controlling the Robot with Inverse Kinematics (simple_controller.cpp/py)
+### 6. Controlling the Robot with Inverse Kinematics (`simple_controller`)
 
-The `simple_controller.cpp` (and its Python equivalent `simple_controller.py`) nodes implement inverse kinematics to control the robot's linear (`vx`, `vy`) and angular (`theta_dot`) velocities by converting them into individual wheel velocities. This allows for more intuitive control of the robot's motion.
+The `simple_controller` nodes (in both C++ and Python) implement inverse kinematics to control the robot's linear (`vx`) and angular (`wz`) velocities by converting them into individual wheel velocities. This allows for more intuitive control of the robot's motion.
 
 To control the robot using these nodes, publish `geometry_msgs/msg/TwistStamped` messages to the `/bumperbot_controller/cmd_vel` topic:
 
@@ -56,7 +59,21 @@ ros2 topic pub /bumperbot_controller/cmd_vel geometry_msgs/msg/TwistStamped "{he
 
 This command will set a linear velocity of 0.2 m/s in the x-direction and an angular velocity of 0.5 rad/s around the z-axis.
 
-## ROS 2 Control CLI Commands
+### 7. Noisy Controller (`noisy_controller`)
+
+The `noisy_controller` nodes (in both C++ and Python) are designed for simulation purposes to test localization algorithms. They mimic the behavior of real-world wheel encoders by introducing noise into the joint state readings.
+
+*   **Purpose**: To provide a more realistic odometry source by adding random Gaussian noise to the wheel encoder positions before calculating the robot's pose.
+*   **Functionality**:
+    *   Subscribes to the `/joint_states` topic.
+    *   Adds noise to the left and right wheel positions.
+    *   Calculates odometry based on these noisy values.
+    *   Publishes the resulting odometry to the `/bumperbot_controller/odom_noisy` topic.
+    *   Publishes the corresponding TF transform from `odom` to `base_footprint_noisy`.
+
+This "noisy" odometry can then be fused with other sensor data (e.g., from an IMU) in a sensor fusion algorithm like an Extended Kalman Filter (EKF) to produce a more accurate and robust localization.
+
+### 8. ROS 2 Control CLI Commands
 
 These commands are useful for inspecting and managing `ros2_control` components.
 
@@ -87,22 +104,16 @@ These commands are useful for inspecting and managing `ros2_control` components.
     ros2 control list_controller_types
     ```
 
-*   **Detailed information about a specific controller (if available/running):**
-    ```bash
-    ros2 topic info /controller_name/topic_name
-    ```
-    (Replace `/controller_name/topic_name` with actual topic for state or commands)
+### 9. Parameters
 
-## Parameters
-
-The `simple_controller` nodes (both Python and C++) accept the following parameters:
+The `simple_controller` and `noisy_controller` nodes accept the following parameters:
 
 *   `wheel_radius`: The radius of the robot's wheels in meters.
 *   `wheel_separation`: The distance between the centers of the two wheels in meters.
 
 These parameters can be set in the launch file or overridden via the command line.
 
-## Note on Forward Differential Kinematics for a Differential Drive Robot
+### 10. Note on Forward Differential Kinematics for a Differential Drive Robot
 
 Forward Differential Kinematics relates the wheel velocities to the robot's chassis velocity. For a differential drive robot, this is expressed using the Jacobian matrix.
 
