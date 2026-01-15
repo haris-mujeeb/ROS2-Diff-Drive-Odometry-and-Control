@@ -11,6 +11,16 @@
   <!-- Include ros2_control Plugins -->
   <xacro:include filename="$(find bumperbot_description)/urdf/bumperbot_ros2_control.xacro" />
 
+  <!-- Color Properties -->
+  <xacro:property name="blue" value="0.2 0.4 0.8 1.0"/>
+  <xacro:property name="black" value="0.1 0.1 0.1 1.0"/>
+  <xacro:property name="grey" value="0.5 0.5 0.5 1.0"/>
+  <xacro:property name="red" value="1.0 0.0 0.0 1.0"/>
+  <xacro:property name="green" value="0.0 1.0 0.0 1.0"/>
+  <xacro:property name="yellow" value="1.0 1.0 0.0 1.0"/>
+  <xacro:property name="magenta" value="1.0 0.0 1.0 1.0"/>
+  <xacro:property name="white" value="1.0 1.0 1.0 1.0"/>
+
   <link name="base_footprint"/>
   
   <link name="base_link">
@@ -26,6 +36,9 @@
       <geometry>
         <mesh filename="package://bumperbot_description/meshes/base_link.STL" />
       </geometry>
+      <material name="blue">
+        <color rgba="${blue}"/>
+      </material>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0" />
@@ -54,6 +67,9 @@
       <geometry>
         <mesh filename="package://bumperbot_description/meshes/wheel_right_link.STL" />
       </geometry>
+      <material name="red">
+        <color rgba="${red}"/>
+      </material>
     </visual>
     <collision>
       <origin xyz="0 -0.015 0" rpy="1.57 0 0" />
@@ -84,6 +100,9 @@
       <geometry>
         <mesh filename="package://bumperbot_description/meshes/wheel_left_link.STL" />
       </geometry>
+      <material name="green">
+        <color rgba="${green}"/>
+      </material>
     </visual>
     <collision>
       <origin xyz="0 0.015 0" rpy="-1.57 0 0" />
@@ -113,6 +132,9 @@
       <geometry>
         <mesh filename="package://bumperbot_description/meshes/caster_front_link.STL" />
       </geometry>
+      <material name="yellow">
+        <color rgba="${yellow}"/>
+      </material>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0" />
@@ -142,6 +164,9 @@
       <geometry>
         <mesh filename="package://bumperbot_description/meshes/caster_rear_link.STL" />
       </geometry>
+      <material name="magenta">
+        <color rgba="${magenta}"/>
+      </material>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0" />
@@ -171,8 +196,8 @@
       <geometry>
         <mesh filename="package://bumperbot_description/meshes/imu_link.STL" scale="1 1 1"/>
       </geometry>
-      <material name="">
-        <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      <material name="white">
+        <color rgba="${white}" />
       </material>
     </visual>
     <collision>
