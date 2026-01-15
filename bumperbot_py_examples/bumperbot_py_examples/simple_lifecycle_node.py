@@ -5,7 +5,7 @@ from std_msgs.msg import String
 import time
 
 class SimpleLifecycleNode(Node):
-  def __int__(self, node_name, **kwargs):
+  def __init__(self, node_name, **kwargs):
     super().__init__(node_name, **kwargs)
 
   def on_configure(self, state: State) -> TransitionCallbackReturn:
